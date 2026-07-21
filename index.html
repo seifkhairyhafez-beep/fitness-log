@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Log. — Training Ledger</title>
+<meta name="description" content="Weekly workout checklist, swim plans, and post-session metric logger." />
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#12151A" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#EEF1F1" media="(prefers-color-scheme: light)" />
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Log." />
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAFQklEQVR4nO3dy6uUdRzH8d+5eI6dFD1ewBTCRQQWdvkDclG2KWkZ1LLcRRHhol0QEbgXF10WLVr0B0TLCNuVEWlCGFGLpBTHWybejuEJxcu5zMwzc+Z5ns/rBe7OPGc4ft/P95kLM2OlZjZs3npj1PeB4emcOjFWamSkd8awM+ooVvwXG3rqFMOK/TKDTx1DGPovMfjUOYShHdzg04QQBn5Qg0+TQhgf5MEMP8M26BkbSE0Gn6Zug8obwPAzKoOYvUoBGH5GreoM9h2A4acuqsxiXwEYfuqm35nsOQDDT131M5s9BWD4qbteZ7TrAAw/TdHLrHYVgOGnabqd2WUDMPw0VTezO9C3QkDTLBmAsz9Nt9wMLxqA4actlppll0BEWzAAZ3/aZrGZtgGIdl8Azv601UKzbQMQ7a4AnP1pu3tn3AYg2u0AnP1Jcees2wBEEwDR5gNw+UOaWzNvAxBNAEQTANEEQLQxD4BJZgMQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQbbKEe3737nLw4IG+bnv8+K/lhRf3DPw+sXJsAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiDY56jvA4M1MjpeXH15Tnt0yU56YnS4bp8bLxNhY6Vy5Xo6du1K++ftS+fz38+Xslbn4P78AqgzazEzZteuZoQ5Rp9MpR4/+3PXPv7J9bfngyU1l/dT9y/2hBybn/z23Zaa8+/hs+eBop3x0/Fy5UXIJoIJt27aWTz/5uAzToUPfltde39vVz+5/elPZ+8i6rrfEh09tKjvXT5c3vzsZG4HHAC3xxqPrux7+ezfG2ztmSyoBtMDG6Yn5S5p+7dsxWzavniiJBNACe7Y9OH9J06/VE2PlpW1rSiIBtMDNZ3qq2jk7VRIJoAXWr6r+3zg75RKIhjp95Xr1Y1yufowmsgFa4PDpy5WP8eOZ6sdoIgG0wFcnLlZ6Vfffa3Plyz8vlkQCaIHzV+fK+0dO9337/cfOuASi2T777Xw58MvZFbtdW9gALfLeT6fLW9+fnN8Iy7lwda7s++FUeefwqZJsbMPmralvA2mttavGy6vb15bdW2bKY+umyobpiXL9xv/P9Bw5e7l8/del8sUfF8o/17wbVABEcwlENAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRAtPHOqRNjo74TMAo3Z98GIJoAiCYAogmAaPMBeCBMmlszbwMQTQBEux2AyyBS3DnrNgDR7grAFqDt7p1xG4Bo9wVgC9BWC822DUC0BQOwBWibxWbaBiDaogHYArTFUrO85AYQAU233Ay7BCLasgHYAjRVN7Pb1QYQAU3T7cx2fQkkApqil1nt6TGACKi7Xme05wfBIqCu+pnNvp4FEgF10+9M9v00qAioiyqzWOl1ABEwalVnsPILYSJgVAYxewP9XNANm7feGOTxYNgn3YG+FcI2YNgGPWND+2Ro24AmnFyH/tHoQqDOVxUr9t0AQqCOl9Mr/uUYQqBOjyNH+u0wYmDUT57U7uuRRNFunZp9Jdd/27JNDtaqk80AAAAASUVORK5CYII=" />
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAFQklEQVR4nO3dy6uUdRzH8d+5eI6dFD1ewBTCRQQWdvkDclG2KWkZ1LLcRRHhol0QEbgXF10WLVr0B0TLCNuVEWlCGFGLpBTHWybejuEJxcu5zMwzc+Z5ns/rBe7OPGc4ft/P95kLM2OlZjZs3npj1PeB4emcOjFWamSkd8awM+ooVvwXG3rqFMOK/TKDTx1DGPovMfjUOYShHdzg04QQBn5Qg0+TQhgf5MEMP8M26BkbSE0Gn6Zug8obwPAzKoOYvUoBGH5GreoM9h2A4acuqsxiXwEYfuqm35nsOQDDT131M5s9BWD4qbteZ7TrAAw/TdHLrHYVgOGnabqd2WUDMPw0VTezO9C3QkDTLBmAsz9Nt9wMLxqA4actlppll0BEWzAAZ3/aZrGZtgGIdl8Azv601UKzbQMQ7a4AnP1pu3tn3AYg2u0AnP1Jcees2wBEEwDR5gNw+UOaWzNvAxBNAEQTANEEQLQxD4BJZgMQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQbbKEe3737nLw4IG+bnv8+K/lhRf3DPw+sXJsAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiDY56jvA4M1MjpeXH15Tnt0yU56YnS4bp8bLxNhY6Vy5Xo6du1K++ftS+fz38+Xslbn4P78AqgzazEzZteuZoQ5Rp9MpR4/+3PXPv7J9bfngyU1l/dT9y/2hBybn/z23Zaa8+/hs+eBop3x0/Fy5UXIJoIJt27aWTz/5uAzToUPfltde39vVz+5/elPZ+8i6rrfEh09tKjvXT5c3vzsZG4HHAC3xxqPrux7+ezfG2ztmSyoBtMDG6Yn5S5p+7dsxWzavniiJBNACe7Y9OH9J06/VE2PlpW1rSiIBtMDNZ3qq2jk7VRIJoAXWr6r+3zg75RKIhjp95Xr1Y1yufowmsgFa4PDpy5WP8eOZ6sdoIgG0wFcnLlZ6Vfffa3Plyz8vlkQCaIHzV+fK+0dO9337/cfOuASi2T777Xw58MvZFbtdW9gALfLeT6fLW9+fnN8Iy7lwda7s++FUeefwqZJsbMPmralvA2mttavGy6vb15bdW2bKY+umyobpiXL9xv/P9Bw5e7l8/del8sUfF8o/17wbVABEcwlENAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRAtPHOqRNjo74TMAo3Z98GIJoAiCYAogmAaPMBeCBMmlszbwMQTQBEux2AyyBS3DnrNgDR7grAFqDt7p1xG4Bo9wVgC9BWC822DUC0BQOwBWibxWbaBiDaogHYArTFUrO85AYQAU233Ay7BCLasgHYAjRVN7Pb1QYQAU3T7cx2fQkkApqil1nt6TGACKi7Xme05wfBIqCu+pnNvp4FEgF10+9M9v00qAioiyqzWOl1ABEwalVnsPILYSJgVAYxewP9XNANm7feGOTxYNgn3YG+FcI2YNgGPWND+2Ro24AmnFyH/tHoQqDOVxUr9t0AQqCOl9Mr/uUYQqBOjyNH+u0wYmDUT57U7uuRRNFunZp9Jdd/27JNDtaqk80AAAAASUVORK5CYII=" type="image/png" />
+
+<style>
+  :root {
+    --ground: #EEF1F1;
+    --surface: #FFFFFF;
+    --surface-raised: #F7F8F9;
+    --border: #DCE0E3;
+    --text-primary: #14181D;
+    --text-secondary: rgba(20,24,29,0.64);
+    --text-tertiary: rgba(20,24,29,0.40);
+    --accent: #E85A32;
+    --accent-ink: #FFF7F3;
+    --aqua: #1996A0;
+    --good: #2E9E63;
+    --good-bg: rgba(46,158,99,0.12);
+    --warn: #B4790C;
+    --warn-bg: rgba(180,121,12,0.12);
+    --danger: #D14343;
+    --danger-bg: rgba(209,67,67,0.10);
+    --shadow: 0 1px 2px rgba(20,24,29,0.06), 0 8px 24px rgba(20,24,29,0.06);
+    --radius-s: 10px;
+    --radius-m: 16px;
+    --radius-l: 22px;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #12151A;
+      --surface: #1B1F26;
+      --surface-raised: #232833;
+      --border: #2C323D;
+      --text-primary: #EDEFF2;
+      --text-secondary: rgba(237,239,242,0.62);
+      --text-tertiary: rgba(237,239,242,0.38);
+      --accent: #FF6A3D;
+      --accent-ink: #241005;
+      --aqua: #35C6BE;
+      --good: #59D18F;
+      --good-bg: rgba(89,209,143,0.14);
+      --warn: #F2B84B;
+      --warn-bg: rgba(242,184,75,0.14);
+      --danger: #FF6B76;
+      --danger-bg: rgba(255,107,118,0.12);
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.35);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #12151A;
+    --surface: #1B1F26;
+    --surface-raised: #232833;
+    --border: #2C323D;
+    --text-primary: #EDEFF2;
+    --text-secondary: rgba(237,239,242,0.62);
+    --text-tertiary: rgba(237,239,242,0.38);
+    --accent: #FF6A3D;
+    --accent-ink: #241005;
+    --aqua: #35C6BE;
+    --good: #59D18F;
+    --good-bg: rgba(89,209,143,0.14);
+    --warn: #F2B84B;
+    --warn-bg: rgba(242,184,75,0.14);
+    --danger: #FF6B76;
+    --danger-bg: rgba(255,107,118,0.12);
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.35);
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --ground: #EEF1F1;
+    --surface: #FFFFFF;
+    --surface-raised: #F7F8F9;
+    --border: #DCE0E3;
+    --text-primary: #14181D;
+    --text-secondary: rgba(20,24,29,0.64);
+    --text-tertiary: rgba(20,24,29,0.40);
+    --accent: #E85A32;
+    --accent-ink: #FFF7F3;
+    --aqua: #1996A0;
+    --good: #2E9E63;
+    --good-bg: rgba(46,158,99,0.12);
+    --warn: #B4790C;
+    --warn-bg: rgba(180,121,12,0.12);
+    --danger: #D14343;
+    --danger-bg: rgba(209,67,67,0.10);
+    --shadow: 0 1px 2px rgba(20,24,29,0.06), 0 8px 24px rgba(20,24,29,0.06);
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--ground);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  .mono {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .shell {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 48px;
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    padding: 28px 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .wordmark-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .wordmark {
+    font-weight: 800;
+    font-size: 30px;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+  .wordmark span { color: var(--accent); }
+  .date-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  .progress-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-l);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow);
+  }
+  .ring-wrap { position: relative; width: 56px; height: 56px; flex-shrink: 0; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-track { fill: none; stroke: var(--border); stroke-width: 6; }
+  .ring-fill { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+  .ring-num {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+  }
+  .progress-copy { flex: 1; min-width: 0; }
+  .progress-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+  .progress-sub { font-size: 12.5px; color: var(--text-secondary); }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    display: flex;
+    margin: 4px 20px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    padding: 4px;
+    gap: 4px;
+  }
+  .tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 10px 0;
+    border-radius: calc(var(--radius-m) - 4px);
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+  .tab-btn.active { background: var(--accent); color: var(--accent-ink); }
+  .tab-btn:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  main { padding: 0 20px; display: flex; flex-direction: column; gap: 14px; }
+  section.hidden { display: none; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin: 6px 2px 0;
+  }
+
+  /* ---------- Day rows ---------- */
+  .day-list { display: flex; flex-direction: column; gap: 8px; }
+  .day-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    padding: 12px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow);
+  }
+  .day-row.is-today { border-color: var(--accent); }
+  .day-row.is-done { }
+
+  .check-btn {
+    width: 30px; height: 30px; border-radius: 9px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-raised);
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    color: transparent;
+  }
+  .check-btn svg { width: 16px; height: 16px; }
+  .check-btn.checked {
+    background: var(--good);
+    border-color: var(--good);
+    color: var(--surface);
+  }
+  .check-btn:active { transform: scale(0.92); }
+
+  .day-info { flex: 1; min-width: 0; }
+  .day-label-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+  .day-abbr { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; color: var(--text-tertiary); text-transform: uppercase; }
+  .today-chip {
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    background: var(--accent); color: var(--accent-ink);
+    padding: 2px 6px; border-radius: 5px;
+  }
+  .session-input {
+    border: none; background: transparent; color: var(--text-primary);
+    font-size: 14.5px; font-weight: 600; width: 100%; padding: 2px 0;
+    font-family: inherit;
+  }
+  .session-input.done-text { color: var(--text-secondary); text-decoration: line-through; text-decoration-color: var(--text-tertiary); }
+  .session-input::placeholder { color: var(--text-tertiary); font-weight: 500; }
+
+  .log-btn {
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    background: var(--surface-raised);
+    color: var(--text-secondary);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 8px 10px;
+    border-radius: 9px;
+    cursor: pointer;
+  }
+  .log-btn.expanded { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+  .plan-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--aqua);
+    background: transparent;
+    border: 1px solid var(--aqua);
+    border-radius: 5px;
+    padding: 2px 6px;
+    cursor: pointer;
+  }
+
+  /* ---------- Logger panel ---------- */
+  .logger-panel {
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 var(--radius-m) var(--radius-m);
+    margin-top: -8px;
+    padding: 14px 14px 16px;
+    display: none;
+  }
+  .day-row-wrap { display: flex; flex-direction: column; }
+  .day-row-wrap.expanded .day-row { border-radius: var(--radius-m) var(--radius-m) 0 0; }
+  .day-row-wrap.expanded .logger-panel { display: block; }
+
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .field .unit { font-weight: 500; color: var(--text-tertiary); text-transform: none; letter-spacing: 0; }
+  .field input, .field textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-s);
+    padding: 9px 10px;
+    font-size: 14.5px;
+    color: var(--text-primary);
+    font-family: inherit;
+    width: 100%;
+  }
+  .field input.mono { font-size: 15px; }
+  .field textarea { resize: none; min-height: 44px; font-family: inherit; }
+
+  .panel-actions { display: flex; gap: 8px; }
+  .btn-primary, .btn-ghost {
+    flex: 1;
+    border-radius: var(--radius-s);
+    padding: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-ghost { background: transparent; border-color: var(--border); color: var(--text-secondary); }
+
+  /* ---------- History ---------- */
+  .history-list { display: flex; flex-direction: column; gap: 10px; }
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-tertiary);
+    font-size: 13.5px;
+  }
+  .entry-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    padding: 14px 14px;
+    box-shadow: var(--shadow);
+  }
+  .entry-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .entry-name { font-weight: 700; font-size: 15px; }
+  .entry-date { font-size: 11.5px; color: var(--text-tertiary); margin-top: 2px; }
+  .entry-tag {
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 5px; background: var(--aqua); color: var(--accent-ink);
+    flex-shrink: 0;
+  }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 4px; }
+  .metric { background: var(--surface-raised); border-radius: 9px; padding: 8px 6px; text-align: center; }
+  .metric-val { font-size: 14.5px; font-weight: 700; }
+  .metric-val.empty { color: var(--text-tertiary); font-weight: 500; }
+  .metric-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-tertiary); margin-top: 2px; }
+  .entry-notes { font-size: 12.5px; color: var(--text-secondary); margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+  .entry-footer { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .delete-btn {
+    font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+    background: transparent; border: none; cursor: pointer; padding: 4px 8px;
+  }
+  .delete-btn.armed { color: var(--danger); background: var(--danger-bg); border-radius: 6px; }
+
+  .quick-log-card {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-m);
+    padding: 14px;
+  }
+  .quick-log-toggle {
+    width: 100%; background: transparent; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--text-primary); font-weight: 700; font-size: 14px; padding: 0;
+  }
+  .quick-log-toggle .plus { color: var(--accent); font-size: 18px; }
+  .quick-log-body { margin-top: 12px; display: none; }
+  .quick-log-body.open { display: block; }
+
+  /* ---------- Swim Plans ---------- */
+  .swim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--aqua);
+    border-radius: var(--radius-m);
+    padding: 16px 16px 14px;
+    box-shadow: var(--shadow);
+    scroll-margin-top: 16px;
+  }
+  .swim-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 4px; }
+  .swim-day { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--aqua); }
+  .swim-title { font-weight: 700; font-size: 16px; margin-top: 2px; }
+  .swim-total {
+    flex-shrink: 0; text-align: right;
+  }
+  .swim-total .val { font-size: 16px; font-weight: 800; }
+  .swim-total .lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-tertiary); }
+
+  .gear-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 14px; }
+  .gear-pill {
+    font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-raised); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 10px;
+  }
+
+  .seg { margin-bottom: 12px; }
+  .seg:last-child { margin-bottom: 0; }
+  .seg-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+  .seg-name { font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); }
+  .seg-dist { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+  .seg-note { font-size: 10.5px; font-weight: 600; color: var(--aqua); margin-left: 6px; }
+  .seg-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+  .seg-items li {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.4;
+    padding-left: 14px; position: relative;
+  }
+  .seg-items li::before {
+    content: ""; position: absolute; left: 0; top: 7px;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--aqua);
+  }
+
+  footer.hint {
+    text-align: center; font-size: 11px; color: var(--text-tertiary); padding: 18px 20px 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app" class="shell"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var DAYS = [
+    { key: "mon", label: "Monday", abbr: "Mon", def: "Rest / Active Recovery" },
+    { key: "tue", label: "Tuesday", abbr: "Tue", def: "Push (Chest, Shoulders, Triceps)" },
+    { key: "wed", label: "Wednesday", abbr: "Wed", def: "Swim (1,800m Pull Set) + Back & Biceps" },
+    { key: "thu", label: "Thursday", abbr: "Thu", def: "Legs & Core" },
+    { key: "fri", label: "Friday", abbr: "Fri", def: "Swim Session / Upper Body" },
+    { key: "sat", label: "Saturday", abbr: "Sat", def: "Heavy Pull & Shoulders" },
+    { key: "sun", label: "Sunday", abbr: "Sun", def: "Rest / Prep" }
+  ];
+
+  var SWIM_WORKOUTS = [
+    {
+      dayKey: "wed",
+      day: "Wednesday",
+      title: 'The "High-Tech" Pool Session',
+      total: "1,800m",
+      gear: ["Bone-conduction headphones", "Pull Buoy", "Smart Band"],
+      segments: [
+        {
+          name: "Warm-Up", dist: "400m",
+          items: ["300m Easy Freestyle (find rhythm/music)", "4 × 25m Backstroke (15s rest)"]
+        },
+        {
+          name: "Main Set", dist: "1,200m", note: "Pull Buoy On",
+          items: ["4 × 200m Steady Pull (20s rest, focus on lats)", "8 × 50m Pace Builder (15s rest, driven by music)"]
+        },
+        {
+          name: "Cool Down", dist: "200m",
+          items: ["200m Super Easy Choice (remove pull buoy, slow heart rate)"]
+        }
+      ]
+    },
+    {
+      dayKey: "fri",
+      day: "Friday",
+      title: "Endurance & Technique Focus",
+      total: "~1,500–1,600m",
+      gear: ["Bone-conduction headphones", "Smart Band"],
+      segments: [
+        {
+          name: "Warm-Up", dist: "300m",
+          items: ["200m Easy Choice", "4 × 25m Freestyle build-up (15s rest)"]
+        },
+        {
+          name: "Main Set", dist: "1,000m",
+          items: ["5 × 200m Moderate Freestyle — smooth breathing, consistent stroke rate (20s rest at the wall)"]
+        },
+        {
+          name: "Cool Down", dist: "200–300m",
+          items: ["Easy mixed strokes or slow kick to flush out the upper body"]
+        }
+      ]
+    }
+  ];
+
+  var LS_WEEK = "fitlog_week_v2";
+  var LS_HISTORY = "fitlog_history_v1";
+
+  function isoWeek(d) {
+    var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    var day = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - day);
+    var yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    var weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+    return date.getUTCFullYear() + "-W" + weekNo;
+  }
+
+  function todayKeyIndex() {
+    var d = new Date().getDay();
+    return d === 0 ? 6 : d - 1;
+  }
+
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  function loadWeek() {
+    var raw = null;
+    try { raw = JSON.parse(localStorage.getItem(LS_WEEK)); } catch (e) {}
+    var wk = isoWeek(new Date());
+    if (raw && raw.week === wk) return raw;
+
+    var days = {};
+    DAYS.forEach(function (d) {
+      var carry = raw && raw.days && raw.days[d.key] ? raw.days[d.key].name : d.def;
+      days[d.key] = { name: carry, done: false };
+    });
+    var fresh = { week: wk, days: days };
+    saveWeek(fresh);
+    return fresh;
+  }
+
+  function saveWeek(w) { localStorage.setItem(LS_WEEK, JSON.stringify(w)); }
+
+  function loadHistory() {
+    try {
+      var h = JSON.parse(localStorage.getItem(LS_HISTORY));
+      return Array.isArray(h) ? h : [];
+    } catch (e) { return []; }
+  }
+  function saveHistory(h) { localStorage.setItem(LS_HISTORY, JSON.stringify(h)); }
+
+  var state = {
+    week: loadWeek(),
+    history: loadHistory(),
+    tab: "week",
+    openLogger: null,
+    quickOpen: false,
+    armedDelete: null
+  };
+
+  function fmtDate(iso) {
+    var d = new Date(iso + "T00:00:00");
+    return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function render() {
+    var app = document.getElementById("app");
+    var days = DAYS;
+    var doneCount = days.filter(function (d) { return state.week.days[d.key].done; }).length;
+    var pct = doneCount / days.length;
+    var r = 22, c = 2 * Math.PI * r;
+    var todayIdx = todayKeyIndex();
+
+    var html = "";
+
+    // Header
+    html += '<header>';
+    html += '<div class="wordmark-row"><div><div class="wordmark">Log<span>.</span></div>' +
+            '<div class="date-eyebrow">' + esc(new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })) + '</div></div></div>';
+    html += '<div class="progress-card">';
+    html += '<div class="ring-wrap"><svg width="56" height="56" viewBox="0 0 56 56">' +
+            '<circle class="ring-track" cx="28" cy="28" r="' + r + '"/>' +
+            '<circle class="ring-fill" cx="28" cy="28" r="' + r + '" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - pct)).toFixed(1) + '"/>' +
+            '</svg><div class="ring-num mono">' + doneCount + '/' + days.length + '</div></div>';
+    html += '<div class="progress-copy"><div class="progress-title">' + (doneCount === days.length ? "Week complete" : doneCount === 0 ? "Week not started" : "In progress") + '</div>' +
+            '<div class="progress-sub">' + doneCount + ' of ' + days.length + ' sessions logged this week</div></div>';
+    html += '</div></header>';
+
+    // Tabs
+    html += '<div class="tabs">' +
+            '<button class="tab-btn' + (state.tab === "week" ? " active" : "") + '" data-tab="week">This Week</button>' +
+            '<button class="tab-btn' + (state.tab === "swim" ? " active" : "") + '" data-tab="swim">Swim Plans</button>' +
+            '<button class="tab-btn' + (state.tab === "history" ? " active" : "") + '" data-tab="history">History</button>' +
+            '</div>';
+
+    html += '<main>';
+
+    // WEEK TAB
+    html += '<section class="' + (state.tab === "week" ? "" : "hidden") + '">';
+    html += '<div class="section-label">Weekly Schedule</div>';
+    html += '<div class="day-list">';
+    days.forEach(function (d, i) {
+      var entry = state.week.days[d.key];
+      var isToday = i === todayIdx;
+      var isOpen = state.openLogger === d.key;
+      html += '<div class="day-row-wrap' + (isOpen ? " expanded" : "") + '">';
+      html += '<div class="day-row' + (isToday ? " is-today" : "") + '">';
+      html += '<button class="check-btn' + (entry.done ? " checked" : "") + '" data-toggle="' + d.key + '" aria-label="Mark ' + d.label + ' complete">' +
+              '<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.2 11.5L13 4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+      html += '<div class="day-info">';
+      var swimPlan = SWIM_WORKOUTS.filter(function (s) { return s.dayKey === d.key; })[0];
+      html += '<div class="day-label-row"><span class="day-abbr">' + d.abbr + '</span>' + (isToday ? '<span class="today-chip">Today</span>' : '') +
+              (swimPlan ? '<button class="plan-chip" data-swim-jump="' + d.key + '">Plan</button>' : '') + '</div>';
+      html += '<input class="session-input' + (entry.done ? " done-text" : "") + '" data-name="' + d.key + '" value="' + esc(entry.name) + '" placeholder="Session name" />';
+      html += '</div>';
+      html += '<button class="log-btn' + (isOpen ? " expanded" : "") + '" data-log="' + d.key + '">' + (isOpen ? "Close" : "Log") + '</button>';
+      html += '</div>';
+      html += '<div class="logger-panel">' + loggerFields(d.key, entry.name) + '</div>';
+      html += '</div>';
+    });
+    html += '</div></section>';
+
+    // SWIM TAB
+    html += '<section class="' + (state.tab === "swim" ? "" : "hidden") + '">';
+    html += '<div class="section-label">Swimming Workouts</div>';
+    html += '<div class="day-list">';
+    SWIM_WORKOUTS.forEach(function (w) { html += swimCard(w); });
+    html += '</div></section>';
+
+    // HISTORY TAB
+    html += '<section class="' + (state.tab === "history" ? "" : "hidden") + '">';
+    html += '<div class="section-label">Log a Past Session</div>';
+    html += '<div class="quick-log-card">';
+    html += '<button class="quick-log-toggle" data-quick-toggle="1"><span>Add entry manually</span><span class="plus">' + (state.quickOpen ? "−" : "+") + '</span></button>';
+    html += '<div class="quick-log-body' + (state.quickOpen ? " open" : "") + '">' + quickLogFields() + '</div>';
+    html += '</div>';
+
+    html += '<div class="section-label" style="margin-top:6px;">Completed Sessions</div>';
+    if (state.history.length === 0) {
+      html += '<div class="empty-state">No sessions logged yet.<br/>Tap "Log" on a workout or add one manually.</div>';
+    } else {
+      html += '<div class="history-list">';
+      state.history.slice().sort(function (a, b) { return b.date.localeCompare(a.date) || b.id.localeCompare(a.id); }).forEach(function (e) {
+        html += entryCard(e);
+      });
+      html += '</div>';
+    }
+    html += '</section>';
+
+    html += '</main>';
+    html += '<footer class="hint">Saved automatically on this device</footer>';
+
+    app.innerHTML = html;
+    bind();
+  }
+
+  function loggerFields(dayKey, sessionName) {
+    var f = state.loggerDraft && state.loggerDraft.key === dayKey ? state.loggerDraft : {};
+    var html = '<div class="field-grid">';
+    html += fieldHtml("Distance", "unit-m", "dist", f.dist, "number", "e.g. 1500");
+    html += fieldHtml("Active Time", "min", "time", f.time, "text", "e.g. 42:10");
+    html += fieldHtml("Avg Heart Rate", "bpm", "hr", f.hr, "number", "e.g. 142");
+    html += fieldHtml("Calories", "kcal", "cal", f.cal, "number", "e.g. 480");
+    html += '</div>';
+    html += '<div class="field full" style="margin-bottom:10px;"><label>Notes <span class="unit">optional</span></label><textarea data-field="notes" placeholder="How did it feel?">' + esc(f.notes || "") + '</textarea></div>';
+    html += '<div class="panel-actions">';
+    html += '<button class="btn-ghost" data-cancel-log="' + dayKey + '">Cancel</button>';
+    html += '<button class="btn-primary" data-save-log="' + dayKey + '">Save &amp; Check Off</button>';
+    html += '</div>';
+    return html;
+  }
+
+  function quickLogFields() {
+    var f = state.quickDraft || {};
+    var html = '<div class="field full" style="margin-bottom:10px;"><label>Session Name</label><input data-qfield="name" type="text" value="' + esc(f.name || "") + '" placeholder="e.g. Saturday Swim" /></div>';
+    html += '<div class="field-grid">';
+    html += '<div class="field"><label>Date</label><input data-qfield="date" type="date" value="' + esc(f.date || todayISO()) + '" /></div>';
+    html += fieldHtmlQ("Distance", "m", "dist", f.dist, "number", "meters");
+    html += fieldHtmlQ("Active Time", "min", "time", f.time, "text", "mm:ss");
+    html += fieldHtmlQ("Avg Heart Rate", "bpm", "hr", f.hr, "number", "bpm");
+    html += '</div>';
+    html += '<div class="field full" style="margin-bottom:10px;">' + fieldHtmlQRaw("Calories", "kcal", "cal", f.cal, "number", "kcal") + '</div>';
+    html += '<div class="field full" style="margin-bottom:10px;"><label>Notes <span class="unit">optional</span></label><textarea data-qfield="notes" placeholder="How did it feel?">' + esc(f.notes || "") + '</textarea></div>';
+    html += '<div class="panel-actions"><button class="btn-primary" data-save-quick="1" style="flex:1;">Save Entry</button></div>';
+    return html;
+  }
+
+  function fieldHtml(label, unit, key, val, type, ph) {
+    return '<div class="field"><label>' + label + ' <span class="unit">' + unit.replace("unit-", "") + '</span></label>' +
+      '<input class="mono" data-field="' + key + '" type="' + type + '" inputmode="' + (type === "number" ? "decimal" : "text") + '" value="' + esc(val || "") + '" placeholder="' + ph + '" /></div>';
+  }
+  function fieldHtmlQ(label, unit, key, val, type, ph) {
+    return '<div class="field"><label>' + label + ' <span class="unit">' + unit + '</span></label>' +
+      '<input class="mono" data-qfield="' + key + '" type="' + type + '" inputmode="' + (type === "number" ? "decimal" : "text") + '" value="' + esc(val || "") + '" placeholder="' + ph + '" /></div>';
+  }
+  function fieldHtmlQRaw(label, unit, key, val, type, ph) { return fieldHtmlQ(label, unit, key, val, type, ph); }
+
+  function todayISO() {
+    var d = new Date();
+    var m = (d.getMonth() + 1).toString().padStart(2, "0");
+    var day = d.getDate().toString().padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+
+  function entryCard(e) {
+    var html = '<div class="entry-card">';
+    html += '<div class="entry-top"><div><div class="entry-name">' + esc(e.name) + '</div><div class="entry-date">' + esc(fmtDate(e.date)) + '</div></div>';
+    if (e.dayKey) html += '<span class="entry-tag">Logged</span>';
+    html += '</div>';
+    html += '<div class="metric-grid">';
+    html += metricHtml(e.dist, "m", "Distance");
+    html += metricHtml(e.time, "", "Time");
+    html += metricHtml(e.hr, "bpm", "Avg HR");
+    html += metricHtml(e.cal, "kcal", "Calories");
+    html += '</div>';
+    if (e.notes) html += '<div class="entry-notes">' + esc(e.notes) + '</div>';
+    html += '<div class="entry-footer"><button class="delete-btn' + (state.armedDelete === e.id ? " armed" : "") + '" data-delete="' + e.id + '">' + (state.armedDelete === e.id ? "Confirm delete" : "Delete") + '</button></div>';
+    html += '</div>';
+    return html;
+  }
+
+  function metricHtml(val, unit, label) {
+    var has = val !== undefined && val !== null && val !== "";
+    return '<div class="metric"><div class="metric-val mono' + (has ? "" : " empty") + '">' + (has ? esc(val) + (unit ? '<span style="font-size:10px;font-weight:600;"> ' + unit + '</span>' : "") : "—") + '</div><div class="metric-lbl">' + label + '</div></div>';
+  }
+
+  function swimCard(w) {
+    var html = '<div class="swim-card" id="swim-' + w.dayKey + '">';
+    html += '<div class="swim-top"><div><div class="swim-day">' + esc(w.day) + '</div><div class="swim-title">' + esc(w.title) + '</div></div>' +
+            '<div class="swim-total"><div class="val mono">' + esc(w.total) + '</div><div class="lbl">Total</div></div></div>';
+    html += '<div class="gear-row">' + w.gear.map(function (g) { return '<span class="gear-pill">' + esc(g) + '</span>'; }).join("") + '</div>';
+    w.segments.forEach(function (seg) {
+      html += '<div class="seg"><div class="seg-head"><span class="seg-name">' + esc(seg.name) + (seg.note ? '<span class="seg-note">' + esc(seg.note) + '</span>' : '') + '</span>' +
+              '<span class="seg-dist mono">' + esc(seg.dist) + '</span></div>';
+      html += '<ul class="seg-items">' + seg.items.map(function (it) { return '<li>' + esc(it) + '</li>'; }).join("") + '</ul></div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function bind() {
+    var app = document.getElementById("app");
+
+    app.querySelectorAll("[data-tab]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.tab = btn.getAttribute("data-tab");
+        state.openLogger = null;
+        render();
+      });
+    });
+
+    app.querySelectorAll("[data-swim-jump]").forEach(function (btn) {
+      btn.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        var key = btn.getAttribute("data-swim-jump");
+        state.tab = "swim";
+        render();
+        var target = document.getElementById("swim-" + key);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    app.querySelectorAll("[data-toggle]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var key = btn.getAttribute("data-toggle");
+        state.week.days[key].done = !state.week.days[key].done;
+        saveWeek(state.week);
+        render();
+      });
+    });
+
+    app.querySelectorAll("[data-name]").forEach(function (inp) {
+      inp.addEventListener("change", function () {
+        var key = inp.getAttribute("data-name");
+        state.week.days[key].name = inp.value;
+        saveWeek(state.week);
+      });
+    });
+
+    app.querySelectorAll("[data-log]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var key = btn.getAttribute("data-log");
+        state.openLogger = state.openLogger === key ? null : key;
+        state.loggerDraft = { key: key };
+        render();
+      });
+    });
+
+    app.querySelectorAll("[data-cancel-log]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.openLogger = null;
+        render();
+      });
+    });
+
+    app.querySelectorAll("[data-field]").forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        if (!state.loggerDraft) state.loggerDraft = {};
+        state.loggerDraft[inp.getAttribute("data-field")] = inp.value;
+      });
+    });
+
+    app.querySelectorAll("[data-save-log]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var key = btn.getAttribute("data-save-log");
+        var d = state.loggerDraft || {};
+        var dayDef = DAYS.filter(function (x) { return x.key === key; })[0];
+        var entry = {
+          id: uid(),
+          date: todayISO(),
+          dayKey: key,
+          name: state.week.days[key].name || dayDef.def,
+          dist: d.dist || "",
+          time: d.time || "",
+          hr: d.hr || "",
+          cal: d.cal || "",
+          notes: d.notes || ""
+        };
+        state.history.push(entry);
+        saveHistory(state.history);
+        state.week.days[key].done = true;
+        saveWeek(state.week);
+        state.openLogger = null;
+        state.loggerDraft = null;
+        render();
+      });
+    });
+
+    var quickToggle = app.querySelector("[data-quick-toggle]");
+    if (quickToggle) quickToggle.addEventListener("click", function () {
+      state.quickOpen = !state.quickOpen;
+      render();
+    });
+
+    app.querySelectorAll("[data-qfield]").forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        if (!state.quickDraft) state.quickDraft = {};
+        state.quickDraft[inp.getAttribute("data-qfield")] = inp.value;
+      });
+    });
+
+    var saveQuick = app.querySelector("[data-save-quick]");
+    if (saveQuick) saveQuick.addEventListener("click", function () {
+      var d = state.quickDraft || {};
+      if (!d.name) { var nameInput = app.querySelector('[data-qfield="name"]'); if (nameInput) nameInput.focus(); return; }
+      var entry = {
+        id: uid(),
+        date: d.date || todayISO(),
+        dayKey: null,
+        name: d.name,
+        dist: d.dist || "",
+        time: d.time || "",
+        hr: d.hr || "",
+        cal: d.cal || "",
+        notes: d.notes || ""
+      };
+      state.history.push(entry);
+      saveHistory(state.history);
+      state.quickDraft = null;
+      state.quickOpen = false;
+      render();
+    });
+
+    app.querySelectorAll("[data-delete]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-delete");
+        if (state.armedDelete === id) {
+          state.history = state.history.filter(function (e) { return e.id !== id; });
+          saveHistory(state.history);
+          state.armedDelete = null;
+        } else {
+          state.armedDelete = id;
+        }
+        render();
+      });
+    });
+  }
+
+  render();
+})();
+</script>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+</script>
+
+</body>
+</html>
