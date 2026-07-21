@@ -184,6 +184,34 @@
   .progress-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
   .progress-sub { font-size: 12.5px; color: var(--text-secondary); }
 
+  /* ---------- Stats row ---------- */
+  .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px; margin-top: 10px; }
+  .stat-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    padding: 12px 14px;
+    box-shadow: var(--shadow);
+  }
+  .stat-tile-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 4px; }
+  .stat-tile-value { font-size: 18px; font-weight: 800; }
+  .stat-tile-value .unit { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+  .stat-tile-sub { font-size: 11.5px; color: var(--aqua); font-weight: 600; margin-top: 2px; }
+
+  /* ---------- Personal bests ---------- */
+  .bests-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .best-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    padding: 12px 10px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .best-value { font-size: 15px; font-weight: 800; color: var(--accent); }
+  .best-label { font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-tertiary); margin-top: 3px; }
+  .best-sub { font-size: 9.5px; color: var(--text-tertiary); margin-top: 2px; }
+
   /* ---------- Tabs ---------- */
   .tabs {
     display: flex;
@@ -261,6 +289,7 @@
   .day-info { flex: 1; min-width: 0; }
   .day-label-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
   .day-abbr { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; color: var(--text-tertiary); text-transform: uppercase; }
+  .day-date { font-size: 10.5px; font-weight: 600; color: var(--text-tertiary); }
   .today-chip {
     font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
     background: var(--accent); color: var(--accent-ink);
@@ -534,6 +563,74 @@
     return d === 0 ? 6 : d - 1;
   }
 
+  function dateISO(d) {
+    var m = (d.getMonth() + 1).toString().padStart(2, "0");
+    var day = d.getDate().toString().padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+
+  function getMonday(d) {
+    var date = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var day = date.getDay();
+    var diff = day === 0 ? -6 : 1 - day;
+    date.setDate(date.getDate() + diff);
+    return date;
+  }
+
+  function weekDates() {
+    var monday = getMonday(new Date());
+    var out = [];
+    for (var i = 0; i < 7; i++) {
+      var d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      out.push(d);
+    }
+    return out;
+  }
+
+  function parseNum(v) {
+    if (v === undefined || v === null || v === "") return null;
+    var n = parseFloat(String(v).replace(/,/g, ""));
+    return isNaN(n) ? null : n;
+  }
+
+  function parseTimeSeconds(v) {
+    if (!v) return null;
+    var m = String(v).trim().match(/^(\d+):(\d{1,2})$/);
+    if (!m) return null;
+    return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+  }
+
+  function fmtSeconds(s) {
+    var m = Math.floor(s / 60), r = s % 60;
+    return m + ":" + String(r).padStart(2, "0");
+  }
+
+  function periodStats(history, startISO, endISO) {
+    var count = 0, distance = 0;
+    history.forEach(function (e) {
+      if (e.date >= startISO && e.date <= endISO) {
+        count++;
+        var n = parseNum(e.dist);
+        if (n) distance += n;
+      }
+    });
+    return { count: count, distance: distance };
+  }
+
+  function computeBests(history) {
+    var best = { dist: null, time: null, cal: null };
+    history.forEach(function (e) {
+      var d = parseNum(e.dist);
+      if (d && (!best.dist || d > best.dist.value)) best.dist = { value: d, name: e.name, date: e.date };
+      var t = parseTimeSeconds(e.time);
+      if (t && (!best.time || t > best.time.value)) best.time = { value: t, name: e.name, date: e.date };
+      var c = parseNum(e.cal);
+      if (c && (!best.cal || c > best.cal.value)) best.cal = { value: c, name: e.name, date: e.date };
+    });
+    return best;
+  }
+
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 
   function loadWeek() {
@@ -605,6 +702,15 @@
             '<div class="progress-sub">' + doneCount + ' of ' + days.length + ' sessions logged this week</div></div>';
     html += '</div></header>';
 
+    var wDates = weekDates();
+    var weekStart = dateISO(wDates[0]), weekEnd = dateISO(wDates[6]);
+    var wStats = periodStats(state.history, weekStart, weekEnd);
+    var now = new Date();
+    var monthStart = dateISO(new Date(now.getFullYear(), now.getMonth(), 1));
+    var monthEnd = dateISO(new Date(now.getFullYear(), now.getMonth() + 1, 0));
+    var mStats = periodStats(state.history, monthStart, monthEnd);
+    html += '<div class="stats-row">' + statTile("This Week", wStats) + statTile("This Month", mStats) + '</div>';
+
     // Tabs
     html += '<div class="tabs">' +
             '<button class="tab-btn' + (state.tab === "week" ? " active" : "") + '" data-tab="week">This Week</button>' +
@@ -628,7 +734,8 @@
               '<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.2 11.5L13 4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
       html += '<div class="day-info">';
       var swimPlan = SWIM_WORKOUTS.filter(function (s) { return s.dayKey === d.key; })[0];
-      html += '<div class="day-label-row"><span class="day-abbr">' + d.abbr + '</span>' + (isToday ? '<span class="today-chip">Today</span>' : '') +
+      var dLabel = wDates[i].toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      html += '<div class="day-label-row"><span class="day-abbr">' + d.label + '</span><span class="day-date mono">' + dLabel + '</span>' + (isToday ? '<span class="today-chip">Today</span>' : '') +
               (swimPlan ? '<button class="plan-chip" data-swim-jump="' + d.key + '">Plan</button>' : '') + '</div>';
       html += '<input class="session-input' + (entry.done ? " done-text" : "") + '" data-name="' + d.key + '" value="' + esc(entry.name) + '" placeholder="Session name" />';
       html += '</div>';
@@ -648,6 +755,15 @@
 
     // HISTORY TAB
     html += '<section class="' + (state.tab === "history" ? "" : "hidden") + '">';
+    var bests = computeBests(state.history);
+    if (bests.dist || bests.time || bests.cal) {
+      html += '<div class="section-label">Personal Bests</div>';
+      html += '<div class="bests-row">';
+      if (bests.dist) html += bestTile(Math.round(bests.dist.value) + "m", "Longest Distance", bests.dist.name);
+      if (bests.time) html += bestTile(fmtSeconds(bests.time.value), "Longest Session", bests.time.name);
+      if (bests.cal) html += bestTile(Math.round(bests.cal.value), "Most Calories", bests.cal.name);
+      html += '</div>';
+    }
     html += '<div class="section-label">Log a Past Session</div>';
     html += '<div class="quick-log-card">';
     html += '<button class="quick-log-toggle" data-quick-toggle="1"><span>Add entry manually</span><span class="plus">' + (state.quickOpen ? "−" : "+") + '</span></button>';
@@ -714,11 +830,19 @@
   }
   function fieldHtmlQRaw(label, unit, key, val, type, ph) { return fieldHtmlQ(label, unit, key, val, type, ph); }
 
-  function todayISO() {
-    var d = new Date();
-    var m = (d.getMonth() + 1).toString().padStart(2, "0");
-    var day = d.getDate().toString().padStart(2, "0");
-    return d.getFullYear() + "-" + m + "-" + day;
+  function todayISO() { return dateISO(new Date()); }
+
+  function statTile(label, stats) {
+    var distStr = stats.distance > 0 ? (stats.distance / 1000).toFixed(1) + "km swum" : null;
+    return '<div class="stat-tile"><div class="stat-tile-label">' + label + '</div>' +
+      '<div class="stat-tile-value mono">' + stats.count + '<span class="unit"> session' + (stats.count === 1 ? "" : "s") + '</span></div>' +
+      (distStr ? '<div class="stat-tile-sub mono">' + distStr + '</div>' : '') + '</div>';
+  }
+
+  function bestTile(value, label, sub) {
+    return '<div class="best-tile"><div class="best-value mono">' + esc(value) + '</div>' +
+      '<div class="best-label">' + label + '</div>' +
+      (sub ? '<div class="best-sub">' + esc(sub) + '</div>' : '') + '</div>';
   }
 
   function entryCard(e) {
