@@ -404,6 +404,7 @@
     padding: 2px 7px; border-radius: 5px; background: var(--aqua); color: var(--accent-ink);
     flex-shrink: 0;
   }
+  .entry-tag.rest { background: var(--surface-raised); color: var(--text-tertiary); border: 1px solid var(--border); }
   .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 4px; }
   .metric { background: var(--surface-raised); border-radius: 9px; padding: 8px 6px; text-align: center; }
   .metric-val { font-size: 14.5px; font-weight: 700; }
@@ -847,35 +848,43 @@
       (sub ? '<div class="best-sub">' + esc(sub) + '</div>' : '') + '</div>';
   }
 
+  function isRestSession(name) { return /\brest\b/i.test(name || ""); }
+
   function entryCard(e) {
+    var isRest = isRestSession(e.name);
     var html = '<div class="entry-card">';
     html += '<div class="entry-top"><div><div class="entry-name">' + esc(e.name) + '</div><div class="entry-date">' + esc(fmtDate(e.date)) + '</div></div>';
-    if (e.dayKey) html += '<span class="entry-tag">Logged</span>';
+    if (isRest) html += '<span class="entry-tag rest">Rest</span>';
+    else if (e.dayKey) html += '<span class="entry-tag">Logged</span>';
     html += '</div>';
 
     if (state.editingId === e.id) {
       var f = state.editDraft || {};
-      html += '<div class="field-grid">';
-      html += fieldHtmlE("Distance", "m", "dist", f.dist, "number", "e.g. 1500");
-      html += fieldHtmlE("Active Time", "min", "time", f.time, "text", "e.g. 42:10");
-      html += fieldHtmlE("Avg Heart Rate", "bpm", "hr", f.hr, "number", "e.g. 142");
-      html += fieldHtmlE("Calories", "kcal", "cal", f.cal, "number", "e.g. 480");
-      html += '</div>';
-      html += '<div class="field full" style="margin-bottom:10px;"><label>Notes <span class="unit">optional</span></label><textarea data-efield="notes" placeholder="How did it feel?">' + esc(f.notes || "") + '</textarea></div>';
+      if (!isRest) {
+        html += '<div class="field-grid">';
+        html += fieldHtmlE("Distance", "m", "dist", f.dist, "number", "e.g. 1500");
+        html += fieldHtmlE("Active Time", "min", "time", f.time, "text", "e.g. 42:10");
+        html += fieldHtmlE("Avg Heart Rate", "bpm", "hr", f.hr, "number", "e.g. 142");
+        html += fieldHtmlE("Calories", "kcal", "cal", f.cal, "number", "e.g. 480");
+        html += '</div>';
+      }
+      html += '<div class="field full" style="margin-bottom:10px;"><label>Notes <span class="unit">optional</span></label><textarea data-efield="notes" placeholder="' + (isRest ? "How are you feeling?" : "How did it feel?") + '">' + esc(f.notes || "") + '</textarea></div>';
       html += '<div class="panel-actions">';
       html += '<button class="btn-ghost" data-cancel-edit="1">Cancel</button>';
       html += '<button class="btn-primary" data-save-edit="' + e.id + '">Save</button>';
       html += '</div>';
     } else {
-      html += '<div class="metric-grid">';
-      html += metricHtml(e.dist, "m", "Distance");
-      html += metricHtml(e.time, "", "Time");
-      html += metricHtml(e.hr, "bpm", "Avg HR");
-      html += metricHtml(e.cal, "kcal", "Calories");
-      html += '</div>';
+      if (!isRest) {
+        html += '<div class="metric-grid">';
+        html += metricHtml(e.dist, "m", "Distance");
+        html += metricHtml(e.time, "", "Time");
+        html += metricHtml(e.hr, "bpm", "Avg HR");
+        html += metricHtml(e.cal, "kcal", "Calories");
+        html += '</div>';
+      }
       if (e.notes) html += '<div class="entry-notes">' + esc(e.notes) + '</div>';
       html += '<div class="entry-footer">';
-      html += '<button class="delete-btn" data-edit="' + e.id + '">Edit</button>';
+      html += '<button class="delete-btn" data-edit="' + e.id + '">' + (isRest ? "Add note" : "Edit") + '</button>';
       html += '<button class="delete-btn' + (state.armedDelete === e.id ? " armed" : "") + '" data-delete="' + e.id + '">' + (state.armedDelete === e.id ? "Confirm delete" : "Delete") + '</button>';
       html += '</div>';
     }
