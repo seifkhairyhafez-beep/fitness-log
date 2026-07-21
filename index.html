@@ -410,7 +410,7 @@
   .metric-val.empty { color: var(--text-tertiary); font-weight: 500; }
   .metric-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-tertiary); margin-top: 2px; }
   .entry-notes { font-size: 12.5px; color: var(--text-secondary); margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
-  .entry-footer { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .entry-footer { display: flex; justify-content: flex-end; gap: 4px; margin-top: 8px; }
   .delete-btn {
     font-size: 11px; font-weight: 700; color: var(--text-tertiary);
     background: transparent; border: none; cursor: pointer; padding: 4px 8px;
@@ -665,7 +665,9 @@
     tab: "week",
     openLogger: null,
     quickOpen: false,
-    armedDelete: null
+    armedDelete: null,
+    editingId: null,
+    editDraft: null
   };
 
   function fmtDate(iso) {
@@ -850,16 +852,40 @@
     html += '<div class="entry-top"><div><div class="entry-name">' + esc(e.name) + '</div><div class="entry-date">' + esc(fmtDate(e.date)) + '</div></div>';
     if (e.dayKey) html += '<span class="entry-tag">Logged</span>';
     html += '</div>';
-    html += '<div class="metric-grid">';
-    html += metricHtml(e.dist, "m", "Distance");
-    html += metricHtml(e.time, "", "Time");
-    html += metricHtml(e.hr, "bpm", "Avg HR");
-    html += metricHtml(e.cal, "kcal", "Calories");
-    html += '</div>';
-    if (e.notes) html += '<div class="entry-notes">' + esc(e.notes) + '</div>';
-    html += '<div class="entry-footer"><button class="delete-btn' + (state.armedDelete === e.id ? " armed" : "") + '" data-delete="' + e.id + '">' + (state.armedDelete === e.id ? "Confirm delete" : "Delete") + '</button></div>';
+
+    if (state.editingId === e.id) {
+      var f = state.editDraft || {};
+      html += '<div class="field-grid">';
+      html += fieldHtmlE("Distance", "m", "dist", f.dist, "number", "e.g. 1500");
+      html += fieldHtmlE("Active Time", "min", "time", f.time, "text", "e.g. 42:10");
+      html += fieldHtmlE("Avg Heart Rate", "bpm", "hr", f.hr, "number", "e.g. 142");
+      html += fieldHtmlE("Calories", "kcal", "cal", f.cal, "number", "e.g. 480");
+      html += '</div>';
+      html += '<div class="field full" style="margin-bottom:10px;"><label>Notes <span class="unit">optional</span></label><textarea data-efield="notes" placeholder="How did it feel?">' + esc(f.notes || "") + '</textarea></div>';
+      html += '<div class="panel-actions">';
+      html += '<button class="btn-ghost" data-cancel-edit="1">Cancel</button>';
+      html += '<button class="btn-primary" data-save-edit="' + e.id + '">Save</button>';
+      html += '</div>';
+    } else {
+      html += '<div class="metric-grid">';
+      html += metricHtml(e.dist, "m", "Distance");
+      html += metricHtml(e.time, "", "Time");
+      html += metricHtml(e.hr, "bpm", "Avg HR");
+      html += metricHtml(e.cal, "kcal", "Calories");
+      html += '</div>';
+      if (e.notes) html += '<div class="entry-notes">' + esc(e.notes) + '</div>';
+      html += '<div class="entry-footer">';
+      html += '<button class="delete-btn" data-edit="' + e.id + '">Edit</button>';
+      html += '<button class="delete-btn' + (state.armedDelete === e.id ? " armed" : "") + '" data-delete="' + e.id + '">' + (state.armedDelete === e.id ? "Confirm delete" : "Delete") + '</button>';
+      html += '</div>';
+    }
     html += '</div>';
     return html;
+  }
+
+  function fieldHtmlE(label, unit, key, val, type, ph) {
+    return '<div class="field"><label>' + label + ' <span class="unit">' + unit + '</span></label>' +
+      '<input class="mono" data-efield="' + key + '" type="' + type + '" inputmode="' + (type === "number" ? "decimal" : "text") + '" value="' + esc(val || "") + '" placeholder="' + ph + '" /></div>';
   }
 
   function metricHtml(val, unit, label) {
@@ -888,6 +914,8 @@
       btn.addEventListener("click", function () {
         state.tab = btn.getAttribute("data-tab");
         state.openLogger = null;
+        state.editingId = null;
+        state.editDraft = null;
         render();
       });
     });
@@ -906,8 +934,31 @@
     app.querySelectorAll("[data-toggle]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var key = btn.getAttribute("data-toggle");
-        state.week.days[key].done = !state.week.days[key].done;
+        var wasDone = state.week.days[key].done;
+        state.week.days[key].done = !wasDone;
         saveWeek(state.week);
+
+        var today = todayISO();
+        if (!wasDone) {
+          var exists = state.history.some(function (e) { return e.dayKey === key && e.date === today; });
+          if (!exists) {
+            var dayDef = DAYS.filter(function (x) { return x.key === key; })[0];
+            state.history.push({
+              id: uid(), date: today, dayKey: key,
+              name: state.week.days[key].name || dayDef.def,
+              dist: "", time: "", hr: "", cal: "", notes: ""
+            });
+            saveHistory(state.history);
+          }
+        } else {
+          var idx = state.history.findIndex(function (e) {
+            return e.dayKey === key && e.date === today && !e.dist && !e.time && !e.hr && !e.cal && !e.notes;
+          });
+          if (idx !== -1) {
+            state.history.splice(idx, 1);
+            saveHistory(state.history);
+          }
+        }
         render();
       });
     });
@@ -924,7 +975,10 @@
       btn.addEventListener("click", function () {
         var key = btn.getAttribute("data-log");
         state.openLogger = state.openLogger === key ? null : key;
-        state.loggerDraft = { key: key };
+        var existing = state.history.filter(function (e) { return e.dayKey === key && e.date === todayISO(); })[0];
+        state.loggerDraft = existing ? {
+          key: key, dist: existing.dist, time: existing.time, hr: existing.hr, cal: existing.cal, notes: existing.notes
+        } : { key: key };
         render();
       });
     });
@@ -948,9 +1002,9 @@
         var key = btn.getAttribute("data-save-log");
         var d = state.loggerDraft || {};
         var dayDef = DAYS.filter(function (x) { return x.key === key; })[0];
-        var entry = {
-          id: uid(),
-          date: todayISO(),
+        var today = todayISO();
+        var fields = {
+          date: today,
           dayKey: key,
           name: state.week.days[key].name || dayDef.def,
           dist: d.dist || "",
@@ -959,7 +1013,14 @@
           cal: d.cal || "",
           notes: d.notes || ""
         };
-        state.history.push(entry);
+        var existingIdx = state.history.findIndex(function (e) { return e.dayKey === key && e.date === today; });
+        if (existingIdx !== -1) {
+          fields.id = state.history[existingIdx].id;
+          state.history[existingIdx] = fields;
+        } else {
+          fields.id = uid();
+          state.history.push(fields);
+        }
         saveHistory(state.history);
         state.week.days[key].done = true;
         saveWeek(state.week);
@@ -1014,6 +1075,48 @@
         } else {
           state.armedDelete = id;
         }
+        render();
+      });
+    });
+
+    app.querySelectorAll("[data-edit]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-edit");
+        var entry = state.history.filter(function (e) { return e.id === id; })[0];
+        state.editingId = id;
+        state.editDraft = entry ? { dist: entry.dist, time: entry.time, hr: entry.hr, cal: entry.cal, notes: entry.notes } : {};
+        render();
+      });
+    });
+
+    app.querySelectorAll("[data-cancel-edit]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.editingId = null;
+        state.editDraft = null;
+        render();
+      });
+    });
+
+    app.querySelectorAll("[data-efield]").forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        if (!state.editDraft) state.editDraft = {};
+        state.editDraft[inp.getAttribute("data-efield")] = inp.value;
+      });
+    });
+
+    app.querySelectorAll("[data-save-edit]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-save-edit");
+        var d = state.editDraft || {};
+        var idx = state.history.findIndex(function (e) { return e.id === id; });
+        if (idx !== -1) {
+          state.history[idx] = Object.assign({}, state.history[idx], {
+            dist: d.dist || "", time: d.time || "", hr: d.hr || "", cal: d.cal || "", notes: d.notes || ""
+          });
+          saveHistory(state.history);
+        }
+        state.editingId = null;
+        state.editDraft = null;
         render();
       });
     });
